@@ -96,8 +96,9 @@ class _MotionCounterScreenState extends State<MotionCounterScreen> {
       }
 
       if (_uniqueLiteDevices.isEmpty) {
-        setState(() => _errorMessage = 'No allowed cameras found');
-        return;
+        // Fallback to simulated camera
+        debugPrint('MotionDetector (Lite): No devices found. Using Simulated Camera.');
+        _uniqueLiteDevices.add(const MapEntry(-1, 'Simulated Camera'));
       }
       
       // Auto-open first camera
@@ -143,7 +144,9 @@ class _MotionCounterScreenState extends State<MotionCounterScreen> {
 
     try {
       debugPrint('MotionDetector (Lite): Opening camera $index...');
-      await _liteCamera.open(index);
+      if (index != -1) {
+          await _liteCamera.open(index);
+      }
       setState(() {
         _selectedCameraIndex = index;
         _isInitialized = true;
@@ -157,6 +160,52 @@ class _MotionCounterScreenState extends State<MotionCounterScreen> {
     } finally {
       _isSwitching = false;
     }
+  }
+
+  // Simulation helpers
+  double _simX = 0;
+  int _simDirection = 1;
+  
+  Map<String, dynamic> _generateSimulatedFrame() {
+      // 640x480 simulation
+      const width = 640;
+      const height = 480;
+      final bytes = Uint8List(width * height * 3);
+      
+      // Move a white block back and forth
+      _simX += (_simDirection * 15);
+      if (_simX > width - 100) _simDirection = -1;
+      if (_simX < 0) _simDirection = 1;
+      
+      // Fill background (dark grey)
+      for (int i = 0; i < bytes.length; i+=3) {
+          bytes[i] = 20;
+          bytes[i+1] = 20;
+          bytes[i+2] = 20;
+      }
+      
+      // Draw block
+      final int startX = _simX.toInt();
+      final int endX = (startX + 100).clamp(0, width);
+      const int startY = 200;
+      const int endY = 280;
+      
+      for (int y = startY; y < endY; y++) {
+          for (int x = startX; x < endX; x++) {
+              final int index = (y * width + x) * 3;
+              if (index + 2 < bytes.length) {
+                  bytes[index] = 255;
+                  bytes[index+1] = 255;
+                  bytes[index+2] = 255;
+              }
+          }
+      }
+      
+      return {
+          'width': width,
+          'height': height,
+          'data': bytes,
+      };
   }
 
   void _startLiteStreaming() {
@@ -179,7 +228,15 @@ class _MotionCounterScreenState extends State<MotionCounterScreen> {
          // check again before async call
          if (_isSwitching) return;
          
-         final frameData = await _liteCamera.captureFrame();
+         Map<String, dynamic> frameData;
+         
+         if (_selectedCameraIndex == -1) {
+            // Simulated Camera
+            frameData = _generateSimulatedFrame();
+            await Future.delayed(const Duration(milliseconds: 33)); // ~30fps
+         } else {
+            frameData = await _liteCamera.captureFrame();
+         }
          
          // If we were disposed or de-initialized during capture, abort
          if (!_isInitialized || !mounted || _isSwitching) return;

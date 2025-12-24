@@ -1,0 +1,13 @@
+{
+  "name": "trainer_flutter",
+  "version": "1.0.0",
+  "scripts": {
+    "start:linux": "node scripts/watch_runner.js -d linux",
+    "start:web": "node scripts/watch_runner.js -d chrome",
+    "start:web-server": "node scripts/watch_runner.js -d web-server",
+    "start:windows": "flutter run -d windows"
+  },
+  "devDependencies": {
+    "chokidar": "^5.0.0"
+  }
+}
