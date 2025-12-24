@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,52 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>trainer_flutter</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
+  <script>
+    // Auto-update PWA logic
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=' + new Date().getTime());
+
+        navigator.serviceWorker.ready.then(function (registration) {
+          console.log('Service Worker ready');
+
+          // Check for updates every minute
+          setInterval(function () {
+            console.log('Checking for PWA updates...');
+            registration.update();
+          }, 60 * 1000);
+
+          // Listen for installing workers
+          registration.addEventListener('updatefound', function () {
+            const newWorker = registration.installing;
+            console.log('New worker installing...');
+            newWorker.addEventListener('statechange', function () {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New worker installed. Skip waiting...');
+                newWorker.postMessage({ action: 'skipWaiting' });
+              }
+            });
+          });
+        });
+
+        // Refresh page when new worker takes control
+        let refreshing;
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (refreshing) return;
+          window.location.reload();
+          refreshing = true;
+        });
+      });
+    }
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>
