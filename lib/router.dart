@@ -8,14 +8,19 @@ import 'screens/farben_screen.dart';
 import 'screens/intervall_screen.dart';
 import 'screens/sound_counter_screen.dart';
 import 'screens/motion_counter_screen.dart';
+import 'screens/webapp_screen.dart';
 
 /// Application router configuration.
 final GoRouter router = GoRouter(
-  initialLocation: '/motion-counter',
+  initialLocation: '/webapp',
   routes: [
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/webapp',
+      builder: (context, state) => const WebappScreen(),
     ),
     GoRoute(
       path: '/kettenrechner',
@@ -43,3 +48,4 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
+

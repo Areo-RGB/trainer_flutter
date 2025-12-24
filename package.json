@@ -5,7 +5,11 @@
     "start:linux": "node scripts/watch_runner.js -d linux",
     "start:web": "node scripts/watch_runner.js -d chrome",
     "start:web-server": "node scripts/watch_runner.js -d web-server",
-    "start:windows": "flutter run -d windows"
+    "start:windows": "flutter run -d windows",
+    "webapp:dev": "npm --prefix webapp run dev",
+    "webapp:build": "npm --prefix webapp run build",
+    "webapp:preview": "npm --prefix webapp run preview",
+    "webapp:bundle": "npm run webapp:build && rm -rf assets/webapp && mkdir -p assets/webapp && cp -r webapp/dist/* assets/webapp/"
   },
   "devDependencies": {
     "chokidar": "^5.0.0"
