@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
             Icon(Icons.grid_view, color: colorScheme.primary),
             const SizedBox(width: 12),
             Text(
-              'Training Erik',
+              'Training',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

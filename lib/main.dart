@@ -13,7 +13,7 @@ class TrainerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Training Erik',
+      title: 'Training',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: ThemeData(
