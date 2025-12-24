@@ -1,11 +1,11 @@
 {
-    "name": "trainer_flutter",
-    "short_name": "trainer_flutter",
+    "name": "Training",
+    "short_name": "Training",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Training Application",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
